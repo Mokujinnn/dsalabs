@@ -1,13 +1,21 @@
 #pragma once
 
-#include "node.hpp"
+#include <string>
 
+#include "Rbtree.hpp"
+
+
+#define RED true
+#define BLACK false
 
 class Rbtree
 {
 private:
-
-    Node* root;
+    bool color;
+    int key;
+    Rbtree *right;
+    Rbtree *left;
+    std::string value;
 
 public:
 
@@ -15,14 +23,26 @@ public:
 
     ~Rbtree();
 
-    Node* add(int key, std::string value);
+    Rbtree* add(int key, std::string value);
 
-    Node* lookup(int key);
+    Rbtree* lookup(int key);
 
     void del(int key);
 
-    Node* min();
+    Rbtree* min();
 
-    Node* max();
+    Rbtree* max();
+
+    bool getColor() const;
+
+    void setColor(bool clr);
+
+    int getKey() const;
+
+    void setKey(int k);
+
+    std::string getValue() const;
+
+    void setValue(std::string v);
 
 };
