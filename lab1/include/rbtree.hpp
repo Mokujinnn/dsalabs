@@ -4,22 +4,32 @@
 
 #include "Rbtree.hpp"
 
-
 #define RED true
 #define BLACK false
 
 class Rbtree
 {
 private:
-    bool color;
-    int key;
-    Rbtree *right;
-    Rbtree *left;
+
+    bool        color;
+    int         key;
     std::string value;
+    Rbtree *    root;
+    Rbtree *    parent;
+    Rbtree *    right;
+    Rbtree *    left;
 
-    Rbtree* create(int key, std::string value);
+    Rbtree* create(int key, std::string value, Rbtree * parent);
 
+    void leftRotate(Rbtree& x);
+
+    void rightRotate(Rbtree& x);
+
+    Rbtree(int key, std::string value, Rbtree * parent);
+    
 public:
+
+    Rbtree();
 
     Rbtree(int key, std::string value);
 

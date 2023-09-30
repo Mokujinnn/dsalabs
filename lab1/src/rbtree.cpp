@@ -2,23 +2,53 @@
 
 #include "rbtree.hpp"
 
+Rbtree::Rbtree()
+{
+    this->parent = nullptr;
+    this->root   = nullptr;
+    this->right  = nullptr;
+    this->left   = nullptr;
+}
+
 Rbtree::Rbtree(int key, std::string value)
 {
-    this->right = nullptr;
-    this->left  = nullptr;
-    this->color = BLACK;
-    this->key   = key;
-    this->value = value;
+    this->parent = nullptr;
+    this->root   = this;
+    this->right  = nullptr;
+    this->left   = nullptr;
+    this->color  = BLACK;
+    this->key    = key;
+    this->value  = value;
+}
+
+Rbtree::Rbtree(int key, std::string value, Rbtree * parent)
+{
+    this->parent = parent;
+    
+    if (parent == nullptr)
+    {
+        this->root = this;
+    }
+    else
+    {
+        this->root = parent->root;
+    }
+
+    this->right  = nullptr;
+    this->left   = nullptr;
+    this->color  = RED;
+    this->key    = key;
+    this->value  = value;
 }
 
 Rbtree::~Rbtree()
 {
-    
+
 }
 
-Rbtree* Rbtree::create(int key, std::string value)
+Rbtree* Rbtree::create(int key, std::string value, Rbtree * parent)
 {
-    Rbtree *node = new Rbtree(key, value);
+    Rbtree *node = new Rbtree(key, value, parent);
     if (node == nullptr)
     {
         std::cout << "Allocation failed. key ={" << key << "}, value = {" << value << "}\n";
@@ -28,40 +58,10 @@ Rbtree* Rbtree::create(int key, std::string value)
     return node;
 }
 
-bool Rbtree::getColor() const
-{
-    return this->color;
-}
-
-void Rbtree::setColor(bool clr)
-{
-    this->color = clr;
-}
-
-int Rbtree::getKey() const
-{
-    return this->key;
-}
-
-void Rbtree::setKey(int k)
-{
-    this->key = key;
-}
-
-std::string Rbtree::getValue() const
-{
-    return this->value;
-}
-
-void Rbtree::setValue(std::string v)
-{
-    this->value = v;
-}
-
 void Rbtree::add(int key, std::string value)
 {
-    Rbtree *parent;
-    Rbtree *node = this;
+    Rbtree *parent = nullptr;
+    Rbtree *node = this->root;
 
     while(node != nullptr)
     {
@@ -80,22 +80,31 @@ void Rbtree::add(int key, std::string value)
         }
     }
 
-    node = create(key, value);
-    if (parent->key > key)
+    node = create(key, value, parent);
+    if (this->root == nullptr)
     {
-        parent->left = node;
+        this->root = node;
     }
     else
     {
-        parent->right = node;
+        if (parent->key > key)
+        {
+            parent->left = node;
+        }
+        else
+        {
+            parent->right = node;
+        }
     }
+    
+    
 }
 
 Rbtree *Rbtree::lookup(int key)
 {
-    Rbtree *node = this;
+    Rbtree *node = this->root;
 
-    while(this != nullptr)
+    while(node != nullptr)
     {
         if(node->key == key)
         {
