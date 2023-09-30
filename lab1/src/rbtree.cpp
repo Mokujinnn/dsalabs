@@ -46,6 +46,54 @@ Rbtree::~Rbtree()
 
 }
 
+void Rbtree::rightRotate(Rbtree* x)
+{
+    Rbtree* y = x->left;
+    x->left = y->right;
+
+    if(y->right != nullptr)
+    {
+        y->right->parent = x;
+    }
+
+    y->parent = x->parent;
+
+    if(x == x->parent->left)
+    {
+        x->parent->left = y;
+    }
+    else
+    {
+        x->parent->right = y;
+    }
+    y->right = x;
+    x->parent = y;
+}
+
+void Rbtree::leftRotate(Rbtree* x)
+{
+    Rbtree* y = x->right;
+    x->right = y->left;
+
+    if(y->left != nullptr)
+    {
+        y->left->parent = y;
+    }
+
+    y->parent = x->parent;
+
+    if(x == x->parent->left)
+    {
+        x->parent->left = y;
+    }
+    else
+    {
+        x->parent->right = y;
+    }
+    y->left = x;
+    x->parent = y;
+}
+
 Rbtree* Rbtree::create(int key, std::string value, Rbtree * parent)
 {
     Rbtree *node = new Rbtree(key, value, parent);

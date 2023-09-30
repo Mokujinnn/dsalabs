@@ -21,9 +21,9 @@ private:
 
     Rbtree* create(int key, std::string value, Rbtree * parent);
 
-    void leftRotate(Rbtree& x);
+    void leftRotate(Rbtree* x);
 
-    void rightRotate(Rbtree& x);
+    void rightRotate(Rbtree* x);
 
     Rbtree(int key, std::string value, Rbtree * parent);
     
@@ -45,16 +45,16 @@ public:
 
     Rbtree* max();
 
-    bool getColor() const;
+    // bool getColor() const;
 
-    void setColor(bool clr);
+    // void setColor(bool clr);
 
-    int getKey() const;
+    // int getKey() const;
 
-    void setKey(int k);
+    // void setKey(int k);
 
-    std::string getValue() const;
+    // std::string getValue() const;
 
-    void setValue(std::string v);
+    // void setValue(std::string v);
 
 };
