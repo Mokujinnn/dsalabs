@@ -17,13 +17,15 @@ private:
     Rbtree *left;
     std::string value;
 
+    Rbtree* create(int key, std::string value);
+
 public:
 
     Rbtree(int key, std::string value);
 
     ~Rbtree();
 
-    Rbtree* add(int key, std::string value);
+    void add(int key, std::string value);
 
     Rbtree* lookup(int key);
 
