@@ -1,10 +1,16 @@
 #include <iostream>
 #include <string>
 
+#include "rbtree.hpp"
+
 int main()
 {
-    std::string s = "aza";
-    std::cout << (s < "aa") << '\n';
+    
+    Rbtree tree;
+
+    tree.add(1021, "pppapdds");
+    tree.add(882, "hsy1");
+    tree.add(2039, "pimpam");
 
     return 0;
 }

@@ -25,6 +25,10 @@ private:
 
     void rightRotate(Rbtree* x);
 
+    void fixup();
+
+    void printInfo(Rbtree * x);
+
     Rbtree(int key, std::string value, Rbtree * parent);
     
 public:

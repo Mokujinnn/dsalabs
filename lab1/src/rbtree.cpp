@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <iomanip>
 #include "rbtree.hpp"
 
 Rbtree::Rbtree()
@@ -8,6 +8,7 @@ Rbtree::Rbtree()
     this->root   = nullptr;
     this->right  = nullptr;
     this->left   = nullptr;
+    this->color  = BLACK;
 }
 
 Rbtree::Rbtree(int key, std::string value)
@@ -44,6 +45,26 @@ Rbtree::Rbtree(int key, std::string value, Rbtree * parent)
 Rbtree::~Rbtree()
 {
 
+}
+
+void Rbtree::printInfo(Rbtree * x)
+{
+    std::cout << std::boolalpha;
+    std::cout << " Color: " << x->color << "\tKey: " << std::setw(5) << x->key << std::setw(5) << "\tValue:" << std::setw(10) << "'" + x->value + "'" << std::setw(10)
+    << " Root: " << std::setw(7) << x->root << std::setw(15) << " Parent: " << std::setw(15) << x->parent << std::setw(7) << " Left: " << std::setw(15) << x->left << std::setw(7) << 
+    " Right: " << std::setw(15) << x->right << std::setw(7) << '\n';
+}
+
+Rbtree* Rbtree::create(int key, std::string value, Rbtree * parent)
+{
+    Rbtree *node = new Rbtree(key, value, parent);
+    if (node == nullptr)
+    {
+        std::cout << "Allocation failed. key ={" << key << "}, value = {" << value << "}\n";
+        return nullptr;
+    }
+
+    return node;
 }
 
 void Rbtree::rightRotate(Rbtree* x)
@@ -94,16 +115,9 @@ void Rbtree::leftRotate(Rbtree* x)
     x->parent = y;
 }
 
-Rbtree* Rbtree::create(int key, std::string value, Rbtree * parent)
+void Rbtree::fixup()
 {
-    Rbtree *node = new Rbtree(key, value, parent);
-    if (node == nullptr)
-    {
-        std::cout << "Allocation failed. key ={" << key << "}, value = {" << value << "}\n";
-        return nullptr;
-    }
-
-    return node;
+    
 }
 
 void Rbtree::add(int key, std::string value)
@@ -129,9 +143,14 @@ void Rbtree::add(int key, std::string value)
     }
 
     node = create(key, value, parent);
-    if (this->root == nullptr)
+    if (parent == nullptr)
     {
-        this->root = node;
+        this->color = BLACK;
+        this->key = node->key;
+        this->value = node->value;
+        this->root = this;
+        this->parent = node->parent;
+        delete node;
     }
     else
     {
@@ -144,8 +163,14 @@ void Rbtree::add(int key, std::string value)
             parent->right = node;
         }
     }
+
     
-    
+    // std::cout << "This: " << this; printInfo(this);
+    // if(parent)
+    // {
+    //     std::cout << "This: " << node; printInfo(node);
+    //     std::cout << "This: " << parent; printInfo(parent);
+    // }
 }
 
 Rbtree *Rbtree::lookup(int key)
