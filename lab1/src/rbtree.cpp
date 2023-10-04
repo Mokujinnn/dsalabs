@@ -50,7 +50,7 @@ Rbtree::~Rbtree()
 void Rbtree::printInfo(Rbtree * x)
 {
     std::cout << std::boolalpha;
-    std::cout << " Color: " << x->color << "\tKey: " << std::setw(5) << x->key << std::setw(5) << "\tValue:" << std::setw(10) << "'" + x->value + "'" << std::setw(10)
+    std::cout << "This: " << x << " Color: " << x->color << "\tKey: " << std::setw(5) << x->key << std::setw(5) << "\tValue:" << std::setw(10) << "'" + x->value + "'" << std::setw(10)
     << " Root: " << std::setw(7) << x->root << std::setw(15) << " Parent: " << std::setw(15) << x->parent << std::setw(7) << " Left: " << std::setw(15) << x->left << std::setw(7) << 
     " Right: " << std::setw(15) << x->right << std::setw(7) << '\n';
 }
@@ -117,12 +117,12 @@ void Rbtree::leftRotate(Rbtree* x)
 
 void Rbtree::fixup(Rbtree * z)
 {
-    while(z->parent->color == RED)
+    while((z->parent) && (z->parent->color == RED))
     {
         if(z->parent == z->parent->parent->left)
         {
             Rbtree * uncle = z->parent->parent->right;
-            if(uncle->color == RED)
+            if((uncle) && (uncle->color == RED))
             {
                 z->parent->color = BLACK;
                 uncle->color = BLACK;
@@ -145,7 +145,7 @@ void Rbtree::fixup(Rbtree * z)
         else
         {
             Rbtree * uncle = z->parent->parent->left;
-            if(uncle->color == RED)
+            if((uncle) && (uncle->color == RED))
             {
                 z->parent->color = BLACK;
                 uncle->color = BLACK;
@@ -166,6 +166,8 @@ void Rbtree::fixup(Rbtree * z)
             }
         }
     }
+
+    this->root->color = BLACK;
 }
 
 void Rbtree::add(int key, std::string value)
@@ -199,6 +201,7 @@ void Rbtree::add(int key, std::string value)
         this->root = this;
         this->parent = node->parent;
         delete node;
+        return;
     }
     else
     {
@@ -219,6 +222,8 @@ void Rbtree::add(int key, std::string value)
     //     std::cout << "This: " << node; printInfo(node);
     //     std::cout << "This: " << parent; printInfo(parent);
     // }
+
+    fixup(node);
 }
 
 Rbtree *Rbtree::lookup(int key)
@@ -261,4 +266,17 @@ Rbtree* Rbtree::max()
         node = node->right;
     }
     return node;
+}
+
+void Rbtree::print(Rbtree *x)
+{
+    if(!x)
+        return;
+
+    if(x->left)
+        print(x->left);
+    if(x->right)
+        print(x->right);
+
+    printInfo(x);
 }

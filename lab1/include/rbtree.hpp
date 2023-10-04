@@ -49,6 +49,8 @@ public:
 
     Rbtree* max();
 
+    void print(Rbtree *x);
+
     // bool getColor() const;
 
     // void setColor(bool clr);
