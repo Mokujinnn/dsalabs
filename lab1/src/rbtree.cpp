@@ -115,9 +115,57 @@ void Rbtree::leftRotate(Rbtree* x)
     x->parent = y;
 }
 
-void Rbtree::fixup()
+void Rbtree::fixup(Rbtree * z)
 {
-    
+    while(z->parent->color == RED)
+    {
+        if(z->parent == z->parent->parent->left)
+        {
+            Rbtree * uncle = z->parent->parent->right;
+            if(uncle->color == RED)
+            {
+                z->parent->color = BLACK;
+                uncle->color = BLACK;
+                z->parent->parent->color = RED;
+                z = z->parent->parent;
+            }
+            else
+            {
+                if(z == z->parent->right)
+                {
+                    z = z->parent;
+                    leftRotate(z);
+                }
+
+                z->parent->color = BLACK;
+                z->parent->parent->color = RED;
+                rightRotate(z->parent->parent);
+            }
+        }
+        else
+        {
+            Rbtree * uncle = z->parent->parent->left;
+            if(uncle->color == RED)
+            {
+                z->parent->color = BLACK;
+                uncle->color = BLACK;
+                z->parent->parent->color = RED;
+                z = z->parent->parent;
+            }
+            else
+            {
+                if(z == z->parent->left)
+                {
+                    z = z->parent;
+                    rightRotate(z);
+                }
+
+                z->parent->color = BLACK;
+                z->parent->parent->color = RED;
+                leftRotate(z->parent->parent);
+            }
+        }
+    }
 }
 
 void Rbtree::add(int key, std::string value)

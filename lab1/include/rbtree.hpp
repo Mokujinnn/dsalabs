@@ -25,7 +25,7 @@ private:
 
     void rightRotate(Rbtree* x);
 
-    void fixup();
+    void fixup(Rbtree * z);
 
     void printInfo(Rbtree * x);
 
