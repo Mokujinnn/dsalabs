@@ -19,15 +19,18 @@ private:
     Rbtree *    right;
     Rbtree *    left;
 
+
     Rbtree* create(int key, std::string value, Rbtree * parent);
 
     void leftRotate(Rbtree* x);
 
     void rightRotate(Rbtree* x);
 
-    void fixup(Rbtree * z);
+    void addFixup(Rbtree * z);
 
     void printInfo(Rbtree * x);
+
+    void transplant(Rbtree * u, Rbtree * v);
 
     Rbtree(int key, std::string value, Rbtree * parent);
     
@@ -47,7 +50,11 @@ public:
 
     Rbtree* min();
 
+    Rbtree* min(Rbtree* node);
+
     Rbtree* max();
+
+    Rbtree* max(Rbtree* node);
 
     void print(Rbtree *x);
 
