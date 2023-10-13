@@ -8,7 +8,7 @@ int main()
 
     Rbtree Tree;
 
-    int n = 100;
+    int n = 20;
 
     for (int i = 0; i < n; i++)
     {
@@ -17,6 +17,10 @@ int main()
 
     Tree.print();
 
+    Tree.del(7);
+    Tree.del(1);
+
+    Tree.print();
 
     return 0;
 }

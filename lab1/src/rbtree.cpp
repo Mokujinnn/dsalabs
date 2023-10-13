@@ -5,12 +5,14 @@
 
 Rbtree::Rbtree()
 {
-    this->root = nullptr;
+    this->Nil = new Node();
+    this->root = this->Nil;
 }
 
 Rbtree::Rbtree(int key, std::string value)
 {
-    this->root = new Node(key, value);
+    this->Nil = new Node();
+    this->root = new Node(key, value, this->Nil);
 }
 
 Rbtree::~Rbtree()
@@ -18,14 +20,15 @@ Rbtree::~Rbtree()
     Node* node = this->root;
 
     free(node);
+    delete Nil;
 }
 
 void Rbtree::free(Node* x)
 {
-    if (x->left)
+    if (x->left != this->Nil)
         free(x->left);
 
-    if (x->right)
+    if (x->right != this->Nil)
         free(x->right);
 
     delete x;
@@ -35,14 +38,24 @@ void Rbtree::printInfo(Node* x)
 {
     std::cout << std::boolalpha;
     std::cout << "This: " << x << " Color: "; if (x->color == BLACK) std::cout << "Black"; else std::cout << std::setw(5) << "Red";
-    std::cout << " Key: " << std::setw(5) << x->key << "\tValue:" << std::setw(10) << "'" + x->value + "'"
-         << " Parent: " << std::setw(15) << x->parent  << " Left: " << std::setw(15) << x->left  <<
-        " Right: " << x->right << std::setw(15) << '\n';
+    std::cout << " Key: " << std::setw(5) << x->key << "\tValue:" << std::setw(10) << "'" + x->value + "'";
+    if (x->parent == this->Nil) 
+        std::cout << " Parent: " << std::setw(15) << "NIL";
+    else
+        std::cout << " Parent: " << std::setw(15) << x->parent;
+    if (x->left == Nil)
+        std::cout << " Left: " << std::setw(15) << "NIL";
+    else
+        std::cout << " Left: " << std::setw(15) << x->left;
+    if (x->right == Nil)
+        std::cout << " Right: " << std::setw(15) << "NIL\n";
+    else
+        std::cout << " Right: " << std::setw(15) << x->right << '\n';
 }
 
 Node* Rbtree::create(int key, std::string value, Node* parent)
 {
-    Node* node = new Node(key, value, parent);
+    Node* node = new Node(key, value, parent, this->Nil);
     if (!node)
     {
         std::cout << "Allocation failed. key ={" << key << "}, value = {" << value << "}\n";
@@ -57,28 +70,24 @@ void Rbtree::rightRotate(Node* x)
     Node* y = x->left;
     x->left = y->right;
 
-    if (y->right != nullptr)
+    if (y->right != this->Nil)
     {
         y->right->parent = x;
     }
 
     y->parent = x->parent;
 
-
-    if (x->parent)
+    if (x->parent == this->Nil)
     {
-        if (x == x->parent->left) //SIGFAULT
-        {
-            x->parent->left = y;
-        }
-        else
-        {
-            x->parent->right = y;
-        }
+        this->root = y;
+    }
+    else if (x == x->parent->left) //SIGFAULT
+    {
+        x->parent->left = y;
     }
     else
     {
-        this->root = y;
+        x->parent->right = y;
     }
 
     y->right = x;
@@ -90,28 +99,24 @@ void Rbtree::leftRotate(Node* x)
     Node* y = x->right;
     x->right = y->left;
 
-    if (y->left != nullptr)
+    if (y->left != this->Nil)
     {
         y->left->parent = y;
     }
 
     y->parent = x->parent;
 
-
-    if (x->parent)
+    if (x->parent == this->Nil)
     {
-        if (x == x->parent->left) //SIGFAULT
-        {
-            x->parent->left = y;
-        }
-        else
-        {
-            x->parent->right = y;
-        }
+        this->root = y;
+    }
+    else if (x == x->parent->left) //SIGFAULT
+    {
+        x->parent->left = y;
     }
     else
     {
-        this->root = y;
+        x->parent->right = y;
     }
 
     y->left = x;
@@ -120,12 +125,12 @@ void Rbtree::leftRotate(Node* x)
 
 void Rbtree::addFixup(Node* z)
 {
-    while ((z->parent) && (z->parent->color == RED))
+    while (z->parent->color == RED)
     {
         if (z->parent == z->parent->parent->left)
         {
             Node* uncle = z->parent->parent->right;
-            if ((uncle) && (uncle->color == RED))
+            if (uncle->color == RED)
             {
                 z->parent->color = BLACK;
                 uncle->color = BLACK;
@@ -148,7 +153,7 @@ void Rbtree::addFixup(Node* z)
         else
         {
             Node* uncle = z->parent->parent->left;
-            if ((uncle) && (uncle->color == RED))
+            if (uncle->color == RED)
             {
                 z->parent->color = BLACK;
                 uncle->color = BLACK;
@@ -175,10 +180,10 @@ void Rbtree::addFixup(Node* z)
 
 void Rbtree::add(int key, std::string value)
 {
-    Node* parent = nullptr;
-    Node* node = root;
+    Node* parent = this->Nil;
+    Node* node = this->root;
 
-    while (node != nullptr)
+    while (node != this->Nil)
     {
         parent = node;
         if (node->key < key)
@@ -196,10 +201,12 @@ void Rbtree::add(int key, std::string value)
     }
 
     node = create(key, value, parent);
-    if (parent == nullptr)
+    if (parent == this->Nil)
     {
         this->root = node;
         this->root->color = BLACK;
+        node->left = this->Nil;
+        node->right = this->Nil;
         return;
     }
     else
@@ -213,6 +220,8 @@ void Rbtree::add(int key, std::string value)
             parent->right = node;
         }
     }
+    node->left = this->Nil;
+    node->right = this->Nil;
 
     addFixup(node);
 }
@@ -221,7 +230,7 @@ Node* Rbtree::lookup(int key)
 {
     Node* node = root;
 
-    while (node != nullptr)
+    while (node != this->Nil)
     {
         if (node->key == key)
         {
@@ -242,7 +251,7 @@ Node* Rbtree::lookup(int key)
 Node* Rbtree::min()
 {
     Node* node = root;
-    while (node->left != nullptr)
+    while (node->left != this->Nil)
     {
         node = node->left;
     }
@@ -251,7 +260,7 @@ Node* Rbtree::min()
 
 Node* Rbtree::min(Node* node)
 {
-    while (node->left != nullptr)
+    while (node->left != this->Nil)
     {
         node = node->left;
     }
@@ -261,7 +270,7 @@ Node* Rbtree::min(Node* node)
 Node* Rbtree::max()
 {
     Node* node = root;
-    while (node->right != nullptr)
+    while (node->right != this->Nil)
     {
         node = node->right;
     }
@@ -270,7 +279,7 @@ Node* Rbtree::max()
 
 Node* Rbtree::max(Node* node)
 {
-    while (node->left != nullptr)
+    while (node->left != this->Nil)
     {
         node = node->left;
     }
@@ -282,12 +291,12 @@ void Rbtree::print(Node* x)
     if (!x)
         return;
 
-    if (x->left)
+    if (x->left != this->Nil)
         print(x->left);
 
     printInfo(x);
 
-    if (x->right)
+    if (x->right != this->Nil)
         print(x->right);
 
 }
@@ -296,20 +305,20 @@ void Rbtree::print()
 {
     Node* x = root;
 
-    std::cout << "Root: " << x << '\n';
+    std::cout << "Root: " << x << " Key: " << x->key <<   '\n';
 
     if (!x)
         return;
 
-    if (x->left)
+    if (x->left != this->Nil)
         print(x->left);
 
     printInfo(x);
 
-    if (x->right)
+    if (x->right != this->Nil)
         print(x->right);
 
-    
+    std::cout << '\n';
 }
 
 void Rbtree::delFixup(Node* x)
@@ -393,12 +402,12 @@ void Rbtree::del(int key)
     bool ycolor = y->color;
     Node* x = nullptr;
 
-    if (z->left == nullptr)
+    if (z->left == this->Nil)
     {
         x = z->right;
         transplant(z, z->right);
     }
-    else if (z->right == nullptr)
+    else if (z->right == this->Nil)
     {
         x = z->left;
         transplant(z, z->left);
@@ -413,36 +422,23 @@ void Rbtree::del(int key)
             x->parent = y;
         else
         {
-            if (y->right) //sakjsasajk
-                transplant(y, y->right);
-
+            transplant(y, y->right);
             y->right = z->right;
             y->right->parent = y;
         }
 
-        Node* t = y->parent;
+        // Node* t = y->parent;
 
         transplant(z, y);
         y->left = z->left;
         y->left->parent = y;
         y->color = z->color;
-        t->left = nullptr;
+        // t->left = this->Nil;
     }
 
     if (ycolor == BLACK)
     {
-        if (x) // хз
-        {
-            delFixup(x);
-        }
-        else if (y == y->parent->left)
-        {
-            delFixup(y->parent->right);
-        }
-        else
-        {
-            delFixup(y->parent->left);
-        }
+        delFixup(x);
     }
 
     delete z;
@@ -450,13 +446,12 @@ void Rbtree::del(int key)
 
 void Rbtree::transplant(Node* u, Node* v)
 {
-    if (u->parent == nullptr)
+    if (u->parent == this->Nil)
         this->root = v;
     else if (u == u->parent->left)
         u->parent->left = v;
     else
         u->parent->right = v;
 
-    if (v)
-        v->parent = u->parent;
+    v->parent = u->parent;
 }

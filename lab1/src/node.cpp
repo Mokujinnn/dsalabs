@@ -2,28 +2,28 @@
 
 Node::Node()
 {
-    this->key = 0;
-    this->parent = nullptr;
-    this->right = nullptr;
-    this->left = nullptr;
+    // this->key = 0;
+    this->parent = this;
+    this->right = this;
+    this->left = this;
     this->color = BLACK;
 }
 
-Node::Node(int key, std::string value)
+Node::Node(int key, std::string value, Node * Nil)
 {
-    this->parent = nullptr;
-    this->right = nullptr;
-    this->left = nullptr;
+    this->parent = Nil;
+    this->right = Nil;
+    this->left = Nil;
     this->color = BLACK;
     this->key = key;
     this->value = value;
 }
 
-Node::Node(int key, std::string value, Node* parent)
+Node::Node(int key, std::string value, Node* parent, Node * Nil)
 {
     this->parent = parent;
-    this->right = nullptr;
-    this->left = nullptr;
+    this->right = Nil;
+    this->left = Nil;
     this->color = RED;
     this->key = key;
     this->value = value;

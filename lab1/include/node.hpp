@@ -15,9 +15,9 @@ struct Node
 
     Node();
 
-    Node(int key, std::string value);
+    Node(int key, std::string value, Node * Nil);
 
-    Node(int key, std::string value, Node* parent);
+    Node(int key, std::string value, Node* parent, Node * Nil);
 
     ~Node();
 };

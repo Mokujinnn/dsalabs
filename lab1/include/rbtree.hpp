@@ -10,7 +10,7 @@ class Rbtree
 private:
 
     Node * root;
-
+    Node * Nil;
 
     Node* create(int key, std::string value, Node* parent);
 
