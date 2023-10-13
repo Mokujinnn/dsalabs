@@ -22,10 +22,6 @@ Rbtree::~Rbtree()
 
 void Rbtree::free(Node* x)
 {
-    if (!x->left && !x->right)
-    {
-        delete x;
-    }
     if (x->left)
         free(x->left);
 
