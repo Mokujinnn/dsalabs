@@ -2,38 +2,34 @@
 
 #include <string>
 
-#include "Rbtree.hpp"
+#include "node.hpp"
 
-#define RED true
-#define BLACK false
 
 class Rbtree
 {
 private:
 
-    bool        color;
-    int         key;
-    std::string value;
-    Rbtree *    root;
-    Rbtree *    parent;
-    Rbtree *    right;
-    Rbtree *    left;
+    Node * root;
 
 
-    Rbtree* create(int key, std::string value, Rbtree * parent);
+    Node* create(int key, std::string value, Node* parent);
 
-    void leftRotate(Rbtree* x);
+    void leftRotate(Node* x);
 
-    void rightRotate(Rbtree* x);
+    void rightRotate(Node* x);
 
-    void addFixup(Rbtree * z);
+    void addFixup(Node* z);
 
-    void printInfo(Rbtree * x);
+    void delFixup(Node* x);
 
-    void transplant(Rbtree * u, Rbtree * v);
+    void printInfo(Node* x);
 
-    Rbtree(int key, std::string value, Rbtree * parent);
-    
+    void transplant(Node* u, Node* v);
+
+    void print(Node* x);
+
+    void free(Node* x);
+
 public:
 
     Rbtree();
@@ -44,19 +40,19 @@ public:
 
     void add(int key, std::string value);
 
-    Rbtree* lookup(int key);
+    Node* lookup(int key);
 
     void del(int key);
 
-    Rbtree* min();
+    Node* min();
 
-    Rbtree* min(Rbtree* node);
+    Node* min(Node* node);
 
-    Rbtree* max();
+    Node* max();
 
-    Rbtree* max(Rbtree* node);
+    Node* max(Node* node);
 
-    void print(Rbtree *x);
+    void print();
 
     // bool getColor() const;
 

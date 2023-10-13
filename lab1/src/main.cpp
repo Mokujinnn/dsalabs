@@ -5,17 +5,18 @@
 
 int main()
 {
-    
-    Rbtree tree;
 
-    tree.add(1021, "pppapdds");
-    tree.add(882, "hsy1");
-    tree.add(2039, "pimpam");
-    tree.add(12, "rapapa");
-    tree.add(1488, "kepka");
-    tree.add(1337, "shapka");
+    Rbtree Tree;
 
-    tree.print(&tree);
+    int n = 100;
+
+    for (int i = 0; i < n; i++)
+    {
+        Tree.add(i, "");
+    }
+
+    Tree.print();
+
 
     return 0;
 }

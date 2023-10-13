@@ -1,63 +1,52 @@
 #include <iostream>
 #include <iomanip>
 #include "rbtree.hpp"
+#include "node.hpp"
 
 Rbtree::Rbtree()
 {
-    this->parent = nullptr;
-    this->root   = nullptr;
-    this->right  = nullptr;
-    this->left   = nullptr;
-    this->color  = BLACK;
+    this->root = nullptr;
 }
 
 Rbtree::Rbtree(int key, std::string value)
 {
-    this->parent = nullptr;
-    this->root   = this;
-    this->right  = nullptr;
-    this->left   = nullptr;
-    this->color  = BLACK;
-    this->key    = key;
-    this->value  = value;
-}
-
-Rbtree::Rbtree(int key, std::string value, Rbtree * parent)
-{
-    this->parent = parent;
-    
-    if (parent == nullptr)
-    {
-        this->root = this;
-    }
-    else
-    {
-        this->root = parent->root;
-    }
-
-    this->right  = nullptr;
-    this->left   = nullptr;
-    this->color  = RED;
-    this->key    = key;
-    this->value  = value;
+    this->root = new Node(key, value);
 }
 
 Rbtree::~Rbtree()
 {
+    Node* node = this->root;
 
+    free(node);
 }
 
-void Rbtree::printInfo(Rbtree * x)
+void Rbtree::free(Node* x)
+{
+    if (!x->left && !x->right)
+    {
+        delete x;
+    }
+    if (x->left)
+        free(x->left);
+
+    if (x->right)
+        free(x->right);
+
+    delete x;
+}
+
+void Rbtree::printInfo(Node* x)
 {
     std::cout << std::boolalpha;
-    std::cout << "This: " << x << " Color: "; if(x->color == BLACK) std::cout << "Black"; else std::cout << std::setw(5) << "Red"; std::cout << "\tKey: " << std::setw(5) << x->key << std::setw(5) << "\tValue:" << std::setw(10) << "'" + x->value + "'" << std::setw(10)
-    << " Root: " << std::setw(7) << x->root << " Parent: " << std::setw(15) << x->parent << std::setw(7) << " Left: " << std::setw(15) << x->left << std::setw(7) << 
-    " Right: " << std::setw(15) << x->right << std::setw(7) << '\n';
+    std::cout << "This: " << x << " Color: "; if (x->color == BLACK) std::cout << "Black"; else std::cout << std::setw(5) << "Red";
+    std::cout << " Key: " << std::setw(5) << x->key << "\tValue:" << std::setw(10) << "'" + x->value + "'"
+         << " Parent: " << x->parent << std::setw(7) << " Left: " << x->left << std::setw(7) <<
+        " Right: " << x->right << '\n';
 }
 
-Rbtree* Rbtree::create(int key, std::string value, Rbtree * parent)
+Node* Rbtree::create(int key, std::string value, Node* parent)
 {
-    Rbtree *node = new Rbtree(key, value, parent);
+    Node* node = new Node(key, value, parent);
     if (!node)
     {
         std::cout << "Allocation failed. key ={" << key << "}, value = {" << value << "}\n";
@@ -67,62 +56,80 @@ Rbtree* Rbtree::create(int key, std::string value, Rbtree * parent)
     return node;
 }
 
-void Rbtree::rightRotate(Rbtree* x)
+void Rbtree::rightRotate(Node* x)
 {
-    Rbtree* y = x->left;
+    Node* y = x->left;
     x->left = y->right;
 
-    if(y->right != nullptr)
+    if (y->right != nullptr)
     {
         y->right->parent = x;
     }
 
     y->parent = x->parent;
 
-    if(x == x->parent->left)
+
+    if (x->parent)
     {
-        x->parent->left = y;
+        if (x == x->parent->left) //SIGFAULT
+        {
+            x->parent->left = y;
+        }
+        else
+        {
+            x->parent->right = y;
+        }
     }
     else
     {
-        x->parent->right = y;
+        this->root = y;
     }
+
     y->right = x;
     x->parent = y;
 }
 
-void Rbtree::leftRotate(Rbtree* x)
+void Rbtree::leftRotate(Node* x)
 {
-    Rbtree* y = x->right;
+    Node* y = x->right;
     x->right = y->left;
 
-    if(y->left != nullptr)
+    if (y->left != nullptr)
     {
         y->left->parent = y;
     }
 
     y->parent = x->parent;
 
-    if(x == x->parent->left)
+
+    if (x->parent)
     {
-        x->parent->left = y;
+        if (x == x->parent->left) //SIGFAULT
+        {
+            x->parent->left = y;
+        }
+        else
+        {
+            x->parent->right = y;
+        }
     }
     else
     {
-        x->parent->right = y;
+        this->root = y;
     }
+
     y->left = x;
     x->parent = y;
 }
 
-void Rbtree::addFixup(Rbtree * z)
+void Rbtree::addFixup(Node* z)
 {
-    while((z->parent) && (z->parent->color == RED))
+    while ((z->parent) && (z->parent->color == RED))
     {
-        if(z->parent == z->parent->parent->left)
+        if (z->parent == z->parent->parent->left)
         {
-            Rbtree * uncle = z->parent->parent->right;
-            if((uncle) && (uncle->color == RED))
+            Node* uncle = z->parent->parent->right;
+            if ((uncle) && (uncle->color == RED))
             {
                 z->parent->color = BLACK;
                 uncle->color = BLACK;
@@ -131,7 +138,7 @@ void Rbtree::addFixup(Rbtree * z)
             }
             else
             {
-                if(z == z->parent->right)
+                if (z == z->parent->right)
                 {
                     z = z->parent;
                     leftRotate(z);
@@ -144,8 +151,8 @@ void Rbtree::addFixup(Rbtree * z)
         }
         else
         {
-            Rbtree * uncle = z->parent->parent->left;
-            if((uncle) && (uncle->color == RED))
+            Node* uncle = z->parent->parent->left;
+            if ((uncle) && (uncle->color == RED))
             {
                 z->parent->color = BLACK;
                 uncle->color = BLACK;
@@ -154,7 +161,7 @@ void Rbtree::addFixup(Rbtree * z)
             }
             else
             {
-                if(z == z->parent->left)
+                if (z == z->parent->left)
                 {
                     z = z->parent;
                     rightRotate(z);
@@ -172,17 +179,17 @@ void Rbtree::addFixup(Rbtree * z)
 
 void Rbtree::add(int key, std::string value)
 {
-    Rbtree *parent = nullptr;
-    Rbtree *node = this->root;
+    Node* parent = nullptr;
+    Node* node = root;
 
-    while(node != nullptr)
+    while (node != nullptr)
     {
         parent = node;
-        if(node->key < key)
+        if (node->key < key)
         {
             node = node->right;
         }
-        else if(node->key > key)
+        else if (node->key > key)
         {
             node = node->left;
         }
@@ -195,12 +202,8 @@ void Rbtree::add(int key, std::string value)
     node = create(key, value, parent);
     if (parent == nullptr)
     {
-        this->color = BLACK;
-        this->key = node->key;
-        this->value = node->value;
-        this->root = this;
-        this->parent = node->parent;
-        delete node;
+        this->root = node;
+        this->root->color = BLACK;
         return;
     }
     else
@@ -218,17 +221,17 @@ void Rbtree::add(int key, std::string value)
     addFixup(node);
 }
 
-Rbtree *Rbtree::lookup(int key)
+Node* Rbtree::lookup(int key)
 {
-    Rbtree *node = this->root;
+    Node* node = root;
 
-    while(node != nullptr)
+    while (node != nullptr)
     {
-        if(node->key == key)
+        if (node->key == key)
         {
             return node;
         }
-        else if(key < node->key)
+        else if (key < node->key)
         {
             node = node->left;
         }
@@ -240,76 +243,166 @@ Rbtree *Rbtree::lookup(int key)
     return node;
 }
 
-Rbtree* Rbtree::min()
+Node* Rbtree::min()
 {
-    Rbtree* node = this;
-    while(node->left != nullptr)
+    Node* node = root;
+    while (node->left != nullptr)
     {
         node = node->left;
     }
     return node;
 }
 
-Rbtree* Rbtree::min(Rbtree* node)
+Node* Rbtree::min(Node* node)
 {
-    while(node->left != nullptr)
+    while (node->left != nullptr)
     {
         node = node->left;
     }
     return node;
 }
 
-Rbtree* Rbtree::max()
+Node* Rbtree::max()
 {
-    Rbtree* node = this;
-    while(node->right != nullptr)
+    Node* node = root;
+    while (node->right != nullptr)
     {
         node = node->right;
     }
     return node;
 }
 
-Rbtree* Rbtree::max(Rbtree* node)
+Node* Rbtree::max(Node* node)
 {
-    while(node->left != nullptr)
+    while (node->left != nullptr)
     {
         node = node->left;
     }
     return node;
 }
 
-void Rbtree::print(Rbtree *x)
+void Rbtree::print(Node* x)
 {
-    if(!x)
+    if (!x)
         return;
 
-    if(x->left)
+    if (x->left)
         print(x->left);
-    if(x->right)
-        print(x->right);
 
     printInfo(x);
+
+    if (x->right)
+        print(x->right);
+
+}
+
+void Rbtree::print()
+{
+    Node* x = root;
+
+    std::cout << "Root: " << x << '\n';
+
+    if (!x)
+        return;
+
+    if (x->left)
+        print(x->left);
+
+    printInfo(x);
+
+    if (x->right)
+        print(x->right);
+
+    
+}
+
+void Rbtree::delFixup(Node* x)
+{
+    while (x != this->root && x->color == BLACK)
+    {
+        if (x == x->parent->left)
+        {
+            Node* w = x->parent->right;
+            if (w->color == RED)
+            {
+                w->color = BLACK;
+                x->parent->color = RED;
+                leftRotate(x->parent);
+                w = x->parent->right;
+            }
+            if (w->left->color == BLACK && w->right->color == BLACK)
+            {
+                w->color = RED;
+                x = x->parent;
+            }
+            else
+            {
+                if (w->right->color == BLACK)
+                {
+                    w->left->color = BLACK;
+                    w->color = RED;
+                    rightRotate(w);
+                    w = x->parent->right;
+                }
+                w->color = x->parent->color;
+                x->parent->color = BLACK;
+                w->right->color = BLACK;
+                leftRotate(x->parent);
+            }
+        }
+        else
+        {
+            Node* w = x->parent->left;
+            if (w->color == RED)
+            {
+                w->color = BLACK;
+                x->parent->color = RED;
+                rightRotate(x->parent);
+                w = x->parent->left;
+            }
+            if (w->left->color == BLACK && w->right->color == BLACK)
+            {
+                w->color = RED;
+                x = x->parent;
+            }
+            else
+            {
+                if (w->left->color == BLACK)
+                {
+                    w->right->color = BLACK;
+                    w->color = RED;
+                    leftRotate(w);
+                    w = x->parent->left;
+                }
+                w->color = x->parent->color;
+                x->parent->color = BLACK;
+                w->left->color = BLACK;
+                rightRotate(x->parent);
+            }
+        }
+    }
+    x->color = BLACK;
 }
 
 void Rbtree::del(int key)
 {
-    Rbtree * z = lookup(key);
-    if(!z) 
+    Node* z = lookup(key);
+    if (!z)
     {
-        std::cout << "No node with key{" << key << "}\n"; 
+        std::cout << "No node with key{" << key << "}\n";
         return;
     }
 
-    Rbtree * y = z;
+    Node* y = z;
     bool ycolor = y->color;
-    Rbtree * x = nullptr;
-    
-    if(z->left == nullptr)
+    Node* x = nullptr;
+
+    if (z->left == nullptr)
     {
         x = z->right;
         transplant(z, z->right);
     }
-    else if(z->right == nullptr)
+    else if (z->right == nullptr)
     {
         x = z->left;
         transplant(z, z->left);
@@ -320,35 +413,54 @@ void Rbtree::del(int key)
         ycolor = y->color;
         x = y->right;
 
-        if(y->parent == z)
+        if (y->parent == z)
             x->parent = y;
         else
         {
-            transplant(y, y->right);
+            if (y->right) //sakjsasajk
+                transplant(y, y->right);
+
             y->right = z->right;
             y->right->parent = y;
         }
+
+        Node* t = y->parent;
 
         transplant(z, y);
         y->left = z->left;
         y->left->parent = y;
         y->color = z->color;
+        t->left = nullptr;
     }
 
-    if(ycolor == BLACK)
+    if (ycolor == BLACK)
     {
-        /* Восстановление красно-черных свойств */
+        if (x) // хз
+        {
+            delFixup(x);
+        }
+        else if (y == y->parent->left)
+        {
+            delFixup(y->parent->right);
+        }
+        else
+        {
+            delFixup(y->parent->left);
+        }
     }
+
+    delete z;
 }
 
-void Rbtree::transplant(Rbtree * u, Rbtree * v)
+void Rbtree::transplant(Node* u, Node* v)
 {
-    if(u->parent == nullptr)
+    if (u->parent == nullptr)
         this->root = v;
-    else if(u == u->parent->left)
+    else if (u == u->parent->left)
         u->parent->left = v;
     else
         u->parent->right = v;
 
-    v->parent = u->parent;
+    if (v)
+        v->parent = u->parent;
 }
