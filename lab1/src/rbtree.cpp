@@ -36,8 +36,8 @@ void Rbtree::printInfo(Node* x)
     std::cout << std::boolalpha;
     std::cout << "This: " << x << " Color: "; if (x->color == BLACK) std::cout << "Black"; else std::cout << std::setw(5) << "Red";
     std::cout << " Key: " << std::setw(5) << x->key << "\tValue:" << std::setw(10) << "'" + x->value + "'"
-         << " Parent: " << x->parent << std::setw(7) << " Left: " << x->left << std::setw(7) <<
-        " Right: " << x->right << '\n';
+         << " Parent: " << std::setw(15) << x->parent  << " Left: " << std::setw(15) << x->left  <<
+        " Right: " << x->right << std::setw(15) << '\n';
 }
 
 Node* Rbtree::create(int key, std::string value, Node* parent)
