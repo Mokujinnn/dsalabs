@@ -4,34 +4,36 @@
 
 #include "node.hpp"
 
-
 class Rbtree
 {
 private:
+    Node *root;
 
-    Node * root;
-    Node * Nil;
+    Node *create(int key, std::string value, Node *parent);
 
-    Node* create(int key, std::string value, Node* parent);
+    void addFixup(Node *z, Node *parent);
 
-    void leftRotate(Node* x);
+    void delFixup(Node *x);
 
-    void rightRotate(Node* x);
+    void printInfo(Node *x);
 
-    void addFixup(Node* z);
+    void transplant(Node *u, Node *v);
 
-    void delFixup(Node* x);
+    void print(Node *x);
 
-    void printInfo(Node* x);
+    void free(Node *x);
 
-    void transplant(Node* u, Node* v);
+    int blackHeight(Node* x);
 
-    void print(Node* x);
-
-    void free(Node* x);
-
+    void RotateR(Node *parent);
+    
+    void RotateL(Node *parent);    
+    
+    Node *max(Node *node);    
+    
+    Node *min(Node *node);
+    
 public:
-
     Rbtree();
 
     Rbtree(int key, std::string value);
@@ -40,30 +42,17 @@ public:
 
     void add(int key, std::string value);
 
-    Node* lookup(int key);
+    Node *lookup(int key);
 
     void del(int key);
 
-    Node* min();
+    Node *min();
 
-    Node* min(Node* node);
-
-    Node* max();
-
-    Node* max(Node* node);
+    Node *max();
 
     void print();
 
-    // bool getColor() const;
-
-    // void setColor(bool clr);
-
-    // int getKey() const;
-
-    // void setKey(int k);
-
-    // std::string getValue() const;
-
-    // void setValue(std::string v);
+    bool isRbtree();
 
 };
+

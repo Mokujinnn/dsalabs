@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <iomanip>
 
 #include "rbtree.hpp"
 
@@ -8,19 +10,22 @@ int main()
 
     Rbtree Tree;
 
-    int n = 20;
+    int n = 100;
 
     for (int i = 0; i < n; i++)
     {
-        Tree.add(i, "");
+        Tree.add(rand()%n, "");
     }
 
+	Tree.print();
+
+    Tree.del(11);
+    Tree.del(4);
+	Tree.del(3);
+
     Tree.print();
 
-    Tree.del(7);
-    Tree.del(1);
+	std::cout << Tree.isRbtree();
 
-    Tree.print();
-
-    return 0;
+	return 0;
 }

@@ -6,18 +6,15 @@
 
 struct Node
 {
-    bool        color;
-    int         key;
+    
     std::string value;
-    Node* parent;
-    Node* right;
-    Node* left;
+    Node*       parent;
+    Node*       right;
+    Node*       left;
+    int         key;
+    bool        color;
 
-    Node();
-
-    Node(int key, std::string value, Node * Nil);
-
-    Node(int key, std::string value, Node* parent, Node * Nil);
+    Node(int& key, std::string& value);
 
     ~Node();
 };
