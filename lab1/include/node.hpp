@@ -14,7 +14,7 @@ struct Node
     int         key;
     bool        color;
 
-    Node(int& key, std::string& value);
+    Node(int key, std::string value);
 
     ~Node();
 };

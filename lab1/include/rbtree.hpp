@@ -8,10 +8,11 @@ class Rbtree
 {
 private:
     Node *root;
+    Node *Nil;
 
     Node *create(int key, std::string value, Node *parent);
 
-    void addFixup(Node *z, Node *parent);
+    void addFixup(Node *z);//, Node *parent);
 
     void delFixup(Node *x);
 
@@ -54,5 +55,6 @@ public:
 
     bool isRbtree();
 
+    int lookupCountOfNods(int key);
 };
 
