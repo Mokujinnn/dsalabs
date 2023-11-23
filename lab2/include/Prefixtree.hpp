@@ -2,30 +2,32 @@
 #include <string>
 #include "Node.hpp"
 
-class Prefixtrie
+class Prefixtree
 {
 private:
     Node *root;
 
 public:
-    Prefixtrie();
-    ~Prefixtrie();
+    Prefixtree();
+    ~Prefixtree();
 
     void insert(const std::string &key);
 
     Node *lookup(const std::string &key);
+
+    void remove(const std::string &key);
 };
 
-Prefixtrie::Prefixtrie()
+Prefixtree::Prefixtree()
     : root(new Node('\0'))
 {
 }
 
-Prefixtrie::~Prefixtrie()
+Prefixtree::~Prefixtree()
 {
 }
 
-void Prefixtrie::insert(const std::string &key)
+void Prefixtree::insert(const std::string &key)
 {
     Node *node = this->root;
     for (const auto &c : key)
@@ -42,7 +44,7 @@ void Prefixtrie::insert(const std::string &key)
     node->value = key;
 }
 
-Node *Prefixtrie::lookup(const std::string &key)
+Node *Prefixtree::lookup(const std::string &key)
 {
     Node *node = this->root;
     for (const auto &c : key)
@@ -56,5 +58,13 @@ Node *Prefixtrie::lookup(const std::string &key)
         node = child;
     }
 
+    if (node->value == "")
+        return nullptr;
+    
+    return node;
+}
 
+void Prefixtree::remove(const std::string &key)
+{
+    
 }
