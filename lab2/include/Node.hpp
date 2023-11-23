@@ -2,7 +2,7 @@
 #include <map>
 
 struct Node
-{   
+{
     char ch;
     std::string value;
     std::map<char, Node *> children;
@@ -12,6 +12,8 @@ struct Node
           ch(ch)
     {
     }
+
+    ~Node() {}
 
     Node *GetChild(char ch)
     {
