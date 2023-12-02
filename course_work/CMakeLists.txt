@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(cource_work)
+project(course_work)
 
 file(GLOB CPPS "src/*.cpp")
 file(GLOB HPPS "include/*.cpp")
