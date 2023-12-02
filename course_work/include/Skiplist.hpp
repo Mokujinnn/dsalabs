@@ -15,6 +15,7 @@ public:
     Skiplist(unsigned maxLevel, float probability);
     void insert(const int key, const std::string &value);
     void remove(const int key);
+    bool search(const int key);
     ~Skiplist();
 };
 
@@ -131,5 +132,29 @@ void Skiplist::remove(const int key)
     else
     {
         std::cout << key << ": not found\n";
+    }
+}
+
+bool Skiplist::search(const int key)
+{
+    Node *node = this->header;
+
+    for (int i = node->level - 1; i >= 0; --i)
+    {
+        while (node->next[i] != this->Nil && node->next[i]->key < key)
+        {
+            node = node->next[i];
+        }
+    }
+
+    node = node->next[0];
+
+    if (node != this->Nil && node->key == key)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
