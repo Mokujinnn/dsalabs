@@ -97,7 +97,7 @@ void Skiplist::insert(const int key, const std::string &value)
 
 void Skiplist::remove(const int key)
 {
-    Node **update = new Node*[this->maxLevel];
+    Node **update = new Node *[this->maxLevel];
     Node *node = this->header;
 
     for (int i = node->level - 1; i >= 0; --i)
@@ -125,7 +125,7 @@ void Skiplist::remove(const int key)
                 update[i]->next[i] = node->next[i];
             }
         }
-        
+
         delete node;
 
         std::cout << key << ": deleted successfully\n";
@@ -164,11 +164,11 @@ void Skiplist::display()
 {
     std::cout << "Skiplist\n";
 
-    for (int i = this->maxLevel-1; i >= 0; --i)
+    for (int i = this->maxLevel - 1; i >= 0; --i)
     {
-        Node* node = this->header->next[i];
+        Node *node = this->header->next[i];
 
-        std::cout << "Level " << i+1 << ": ";
+        std::cout << "Level " << i + 1 << ": ";
         while (node != this->Nil)
         {
             std::cout << node->key << ' ';

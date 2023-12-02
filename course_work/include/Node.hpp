@@ -5,13 +5,13 @@
 
 struct Node
 {
-  int key;
-  unsigned level;
-  std::string value;
-  Node **next;
+    int key;
+    unsigned level;
+    std::string value;
+    Node **next;
 
-  Node(const int &key, const std::string &value, int level);
-  Node(int level);
+    Node(const int &key, const std::string &value, int level);
+    Node(int level);
 };
 
 Node::Node(const int &key, const std::string &value, int level)
@@ -20,10 +20,10 @@ Node::Node(const int &key, const std::string &value, int level)
       level(level),
       next(new Node *[level])
 {
-  for (int i = 0; i < level; ++i)
-  {
-    this->next[i] = nullptr;
-  }
+    for (int i = 0; i < level; ++i)
+    {
+        this->next[i] = nullptr;
+    }
 }
 
 Node::Node(int level)
@@ -32,8 +32,8 @@ Node::Node(int level)
       level(level),
       next(new Node *[level])
 {
-  for (int i = 0; i < level; ++i)
-  {
-    this->next[i] = nullptr;
-  }
+    for (int i = 0; i < level; ++i)
+    {
+        this->next[i] = nullptr;
+    }
 }
