@@ -16,6 +16,7 @@ public:
     void insert(const int key, const std::string &value);
     void remove(const int key);
     bool search(const int key);
+    void display();
     ~Skiplist();
 };
 
@@ -156,5 +157,23 @@ bool Skiplist::search(const int key)
     else
     {
         return false;
+    }
+}
+
+void Skiplist::display()
+{
+    std::cout << "Skiplist\n";
+
+    for (int i = this->maxLevel-1; i >= 0; --i)
+    {
+        Node* node = this->header->next[i];
+
+        std::cout << "Level " << i+1 << ": ";
+        while (node != this->Nil)
+        {
+            std::cout << node->key << ' ';
+            node = node->next[i];
+        }
+        std::cout << '\n';
     }
 }
