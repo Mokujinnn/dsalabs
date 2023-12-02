@@ -13,7 +13,8 @@ private:
 public:
     Skiplist();
     Skiplist(unsigned maxLevel, float probability);
-    void insert(const int key, const std::string& value);
+    void insert(const int key, const std::string &value);
+    void remove(const int key);
     ~Skiplist();
 };
 
@@ -50,17 +51,85 @@ Skiplist::~Skiplist()
 {
 }
 
-void Skiplist::insert(const int key, const std::string& value)
+void Skiplist::insert(const int key, const std::string &value)
 {
-    std::vector<Node *> update(maxLevel, this->header);
-    Node* node = this->header;
+    Node **update = new Node *[maxLevel];
+    Node *node = this->header;
 
-    for (int i = node->level; i >= 0; --i)
+    for (int i = node->level - 1; i >= 0; --i)
     {
-        while (node->next[i] != this->Nil && node->next[i]->value < value)
+        while (node->next[i] != this->Nil && node->next[i]->key < key)
         {
-            update[i] = node;
             node = node->next[i];
         }
+
+        update[i] = node;
+    }
+
+    node = node->next[0];
+
+    if (node == this->Nil || node->key != key)
+    {
+        int newlvl = 0;
+
+        while (newlvl < this->maxLevel - 1 && (float(rand()) / RAND_MAX) < this->probability)
+        {
+            ++newlvl;
+        }
+
+        Node *newnode = new Node(key, value, newlvl + 1);
+
+        for (int i = 0; i < newlvl + 1; ++i)
+        {
+            newnode->next[i] = update[i]->next[i];
+            update[i]->next[i] = newnode;
+        }
+
+        std::cout << key << ": inserted successfully\n";
+    }
+    else
+    {
+        std::cout << key << ": already exist\n";
+    }
+}
+
+void Skiplist::remove(const int key)
+{
+    Node **update = new Node*[this->maxLevel];
+    Node *node = this->header;
+
+    for (int i = node->level - 1; i >= 0; --i)
+    {
+        while (node->next[i] != this->Nil && node->next[i]->key < key)
+        {
+            node = node->next[i];
+        }
+
+        update[i] = node;
+    }
+
+    node = node->next[0];
+
+    if (node != this->Nil && node->key == key)
+    {
+        for (int i = 0; i < this->maxLevel; ++i)
+        {
+            if (update[i]->next[i] != node)
+            {
+                break;
+            }
+            else
+            {
+                update[i]->next[i] = node->next[i];
+            }
+        }
+        
+        delete node;
+
+        std::cout << key << ": deleted successfully\n";
+    }
+    else
+    {
+        std::cout << key << ": not found\n";
     }
 }
