@@ -1,8 +1,6 @@
 #pragma once
 #include <string>
 
-// template<class K, class V>
-
 struct Node
 {
     int key;
@@ -12,6 +10,7 @@ struct Node
 
     Node(const int &key, const std::string &value, int level);
     Node(int level);
+    ~Node();
 };
 
 Node::Node(const int &key, const std::string &value, int level)
@@ -36,4 +35,9 @@ Node::Node(int level)
     {
         this->next[i] = nullptr;
     }
+}
+
+Node::~Node()
+{
+    delete [] this->next;
 }

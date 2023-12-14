@@ -51,6 +51,17 @@ Skiplist::Skiplist(unsigned maxLevel, float probability)
 
 Skiplist::~Skiplist()
 {
+    Node* node = this->header->next[0];
+
+    while (node != this->Nil)
+    {
+        Node* tmp = node->next[0];
+        delete node;
+        node = tmp;
+    }
+    
+    delete this->header;
+    delete this->Nil;
 }
 
 void Skiplist::insert(const int key, const std::string &value)
@@ -87,12 +98,14 @@ void Skiplist::insert(const int key, const std::string &value)
             update[i]->next[i] = newnode;
         }
 
-        std::cout << key << ": inserted successfully\n";
+        // std::cout << key << ": inserted successfully\n";
     }
     else
     {
-        std::cout << key << ": already exist\n";
+        // std::cout << key << ": already exist\n";
     }
+
+    delete [] update;
 }
 
 void Skiplist::remove(const int key)
@@ -128,12 +141,14 @@ void Skiplist::remove(const int key)
 
         delete node;
 
-        std::cout << key << ": deleted successfully\n";
+        // std::cout << key << ": deleted successfully\n";
     }
     else
     {
-        std::cout << key << ": not found\n";
+        // std::cout << key << ": not found\n";
     }
+
+    delete [] update;
 }
 
 bool Skiplist::search(const int key)
